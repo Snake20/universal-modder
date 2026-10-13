@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mashworks.dev/schema/mashup/1.json",
+  "title": "Mashup manifest (mashup.json)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "version", "title", "summary", "authors", "license", "requires", "ops", "launch", "online"],
+  "properties": {
+    "schema": { "const": 1 },
+    "id": { "$ref": "#/$defs/slug", "description": "Stable package id, unique per platform, e.g. 'hello-mod'." },
+    "version": { "$ref": "#/$defs/semver" },
+    "title": { "type": "string", "minLength": 3, "maxLength": 80 },
+    "summary": { "type": "string", "minLength": 10, "maxLength": 280 },
+    "authors": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/person" } },
+    "license": { "$ref": "#/$defs/spdx" },
+    "ai_disclosure": {
+      "type": "array",
+      "description": "Generated content in this package, e.g. sprites made with an image model.",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["what", "tool"],
+        "properties": { "what": { "type": "string" }, "tool": { "type": "string" } }
+      }
+    },
+    "requires": {
+      "type": "object", "additionalProperties": false, "required": ["games"],
+      "properties": {
+        "games": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "$ref": "#/$defs/gameReq" } },
+        "dependencies": { "type": "array", "items": { "$ref": "#/$defs/dependency" } }
+      }
+    },
+    "ops": { "type": "array", "minItems": 1, "maxItems": 5000, "items": { "$ref": "#/$defs/op" } },
+    "launch": {
+      "type": "object", "additionalProperties": false, "required": ["game"],
+      "properties": {
+        "game": { "$ref": "#/$defs/slug", "description": "Key of the requires.games entry to launch." },
+        "via": { "enum": ["store", "exe"], "default": "store" },
+        "exe": { "$ref": "#/$defs/relPath" },
+        "args": { "type": "array", "maxItems": 32, "items": { "type": "string", "maxLength": 200, "pattern": "^[^&|;<>`$]*$" } },
+        "also_start": { "type": "array", "items": { "$ref": "#/$defs/slug" }, "description": "Other required games to start first (passthrough mashups)." }
+      }
+    },
+    "online": {
+      "type": "object", "additionalProperties": false, "required": ["mode"],
+      "properties": {
+        "mode": { "enum": ["offline", "lan", "self-hosted", "mod-friendly-online"],
+                  "description": "The only modes a mashup may target. Official matchmaking with anti-cheat is never allowed." },
+        "notes": { "type": "string", "maxLength": 1000 }
+      }
+    },
+    "multiplayer": {
+      "type": "object", "additionalProperties": false, "required": ["supported"],
+      "properties": {
+        "supported": { "type": "boolean" },
+        "transport": { "enum": ["game-native", "mod-networking", "steam-lobby"] },
+        "max_players": { "type": "integer", "minimum": 2, "maximum": 64 },
+        "requirements": { "type": "string", "maxLength": 2000 }
+      }
+    },
+    "credits": { "type": "array", "items": { "$ref": "#/$defs/credit" } },
+    "links": {
+      "type": "object", "additionalProperties": false,
+      "properties": { "source": { "$ref": "#/$defs/httpsUrl" }, "homepage": { "$ref": "#/$defs/httpsUrl" }, "issues": { "$ref": "#/$defs/httpsUrl" } }
+    }
+  },
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$" },
+    "semver": { "type": "string", "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z.-]+)?$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "spdx": { "type": "string", "minLength": 2, "maxLength": 100, "description": "SPDX expression, or 'LicenseRef-<name>' with license text in LICENSE." },
+    "httpsUrl": { "type": "string", "pattern": "^https://[^\\s]+$", "maxLength": 2000 },
+    "relPath": {
+      "type": "string", "minLength": 1, "maxLength": 260,
+      "description": "Forward-slash path relative to its root. No '..', no drive letters, no leading slash, no ADS/devices.",
+      "pattern": "^(?!.*(^|/)\\.\\.(/|$))(?![A-Za-z]:)(?!/)(?!.*[:*?\"<>|\\\\])[^\\x00-\\x1f]+$"
+    },
+    "person": {
+      "type": "object", "additionalProperties": false, "required": ["name"],
+      "properties": { "name": { "type": "string", "minLength": 1, "maxLength": 100 }, "url": { "$ref": "#/$defs/httpsUrl" }, "handle": { "type": "string", "maxLength": 64 } }
+    },
+    "credit": {
+      "type": "object", "additionalProperties": false, "required": ["name", "role"],
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 }, "role": { "type": "string", "maxLength": 100 },
+        "url": { "$ref": "#/$defs/httpsUrl" }, "license": { "$ref": "#/$defs/spdx" }
+      }
+    },
+    "gameReq": {
+      "type": "object", "additionalProperties": false, "required": ["key", "name", "stores"],
+      "properties": {
+        "key": { "$ref": "#/$defs/slug", "description": "Local name used by ops and launch." },
+        "name": { "type": "string", "maxLength": 120 },
+        "catalog_id": { "type": "string", "description": "Platform game catalog id, filled in by the server if omitted." },
+        "stores": {
+          "type": "object", "additionalProperties": false, "minProperties": 1,
+          "properties": {
+            "steam": { "type": "string", "pattern": "^\\d{1,10}$" },
+            "epic": { "type": "string", "maxLength": 100 },
+            "gog": { "type": "string", "pattern": "^\\d{1,12}$" },
+            "xbox": { "type": "string", "maxLength": 120, "description": "Package family name." }
+          }
+        },
+        "version": { "type": "string", "maxLength": 100, "description": "Build id or version constraint, informational unless 'fingerprint' is set." },
+        "fingerprint": {
+          "type": "array", "maxItems": 8, "description": "Files whose sha256 pins a supported game build.",
+          "items": { "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+                     "properties": { "path": { "$ref": "#/$defs/relPath" }, "sha256": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/sha256" } } } }
+        },
+        "user_dirs": {
+          "type": "array", "maxItems": 4,
+          "description": "Extra writable roots outside the game folder, e.g. a saves or config folder.",
+          "items": { "type": "object", "additionalProperties": false, "required": ["key", "base", "path"],
+                     "properties": { "key": { "$ref": "#/$defs/slug" }, "base": { "enum": ["documents", "appdata", "localappdata", "savedgames"] }, "path": { "$ref": "#/$defs/relPath" } } }
+        }
+      }
+    },
+    "dependency": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name", "version", "license", "authors", "source", "sha256", "install"],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "name": { "type": "string", "maxLength": 120 },
+        "kind": { "enum": ["loader", "mod", "library", "tool"], "default": "mod" },
+        "version": { "type": "string", "maxLength": 64 },
+        "license": { "$ref": "#/$defs/spdx" },
+        "authors": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/person" } },
+        "source": {
+          "oneOf": [
+            { "type": "object", "additionalProperties": false, "required": ["type", "repo", "tag", "asset"],
+              "properties": { "type": { "const": "github-release" }, "repo": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$" }, "tag": { "type": "string" }, "asset": { "type": "string" } } },
+            { "type": "object", "additionalProperties": false, "required": ["type", "namespace", "name", "version"],
+              "properties": { "type": { "const": "thunderstore" }, "community": { "type": "string" }, "namespace": { "type": "string" }, "name": { "type": "string" }, "version": { "type": "string" } } },
+            { "type": "object", "additionalProperties": false, "required": ["type", "project", "version_id"],
+              "properties": { "type": { "const": "modrinth" }, "project": { "type": "string" }, "version_id": { "type": "string" } } },
+            { "type": "object", "additionalProperties": false, "required": ["type", "mod_id", "file_id"],
+              "properties": { "type": { "const": "curseforge" }, "mod_id": { "type": "integer" }, "file_id": { "type": "integer" } } },
+            { "type": "object", "additionalProperties": false, "required": ["type", "page"],
+              "description": "Sources without a public download API (e.g. Nexus Mods). The player downloads it themselves; the launcher verifies the hash.",
+              "properties": { "type": { "const": "manual" }, "page": { "$ref": "#/$defs/httpsUrl" }, "filename": { "type": "string" } } },
+            { "type": "object", "additionalProperties": false, "required": ["type", "url"],
+              "description": "Direct URL; only hosts on the platform allow-list pass the scanner.",
+              "properties": { "type": { "const": "url" }, "url": { "$ref": "#/$defs/httpsUrl" } } }
+          ]
+        },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "install": {
+          "type": "object", "additionalProperties": false, "required": ["game", "extract_to"],
+          "properties": {
+            "game": { "$ref": "#/$defs/slug" },
+            "extract_to": { "type": "string", "maxLength": 260, "description": "'.' or a relPath under the game root." },
+            "strip_components": { "type": "integer", "minimum": 0, "maximum": 4 },
+            "include": { "type": "array", "items": { "type": "string", "maxLength": 260 } }
+          }
+        }
+      }
+    },
+    "op": {
+      "type": "object", "required": ["op", "root", "target"],
+      "properties": {
+        "op": { "enum": ["copy", "json-merge", "ini-set", "remove"] },
+        "root": { "type": "string", "description": "A requires.games key, or '<game>:<user_dir key>'.", "pattern": "^[a-z0-9-]+(:[a-z0-9-]+)?$" },
+        "target": { "$ref": "#/$defs/relPath" }
+      },
+      "oneOf": [
+        { "properties": { "op": { "const": "copy" }, "root": true, "target": true, "from": { "$ref": "#/$defs/relPath" } }, "required": ["from"], "additionalProperties": false },
+        { "properties": { "op": { "const": "json-merge" }, "root": true, "target": true, "patch": { "type": "object" } }, "required": ["patch"], "additionalProperties": false },
+        { "properties": { "op": { "const": "ini-set" }, "root": true, "target": true, "section": { "type": "string" }, "key": { "type": "string" }, "value": { "type": "string" } }, "required": ["section", "key", "value"], "additionalProperties": false },
+        { "properties": { "op": { "const": "remove" }, "root": true, "target": true }, "additionalProperties": false, "description": "Moves the file to the backup vault; restored on uninstall." }
+      ]
+    }
+  }
+}

@@ -1,0 +1,346 @@
+{
+  "version": 1,
+  "statuses": [
+    "todo",
+    "in_progress",
+    "done",
+    "blocked"
+  ],
+  "tasks": [
+    {
+      "id": "P0-1",
+      "phase": 0,
+      "title": "Architecture diagram, repo layout, flows, Play state machine",
+      "status": "done",
+      "verify": "docs/platform/PLAN.md renders (Mermaid blocks parse)"
+    },
+    {
+      "id": "P0-2",
+      "phase": 0,
+      "title": "Manifest JSON Schema + hello-mod and malicious examples",
+      "status": "done",
+      "verify": "uv run --with jsonschema: hello-mod VALID; bad/traversal.json INVALID on traversal, shell args, online mode"
+    },
+    {
+      "id": "P0-3",
+      "phase": 0,
+      "title": "DB schema with RLS on every table",
+      "status": "done",
+      "verify": "platform/supabase/tests/run.sh: 32 checks pass on Postgres 16"
+    },
+    {
+      "id": "P0-4",
+      "phase": 0,
+      "title": "Package format, API list, threat model, DECISIONS, tasks.json, progress.md",
+      "status": "done",
+      "verify": "files present; tasks.json validated by tests/test_platform_plan.py"
+    },
+    {
+      "id": "P0-5",
+      "phase": 0,
+      "title": "GATE: owner approves plan and answers gate questions",
+      "status": "blocked",
+      "verify": "explicit approval in chat"
+    },
+    {
+      "id": "P1-1",
+      "phase": 1,
+      "title": "Scaffold platform/crates/mashup-core (Rust) + Fs/Registry traits",
+      "status": "todo",
+      "verify": "cargo test -p mashup-core passes; cargo clippy -D warnings clean"
+    },
+    {
+      "id": "P1-2",
+      "phase": 1,
+      "title": "Shared platform/data/signatures.json; um/scan.py reads it too",
+      "status": "todo",
+      "verify": "pytest tests passes; cargo test reads same file"
+    },
+    {
+      "id": "P1-3",
+      "phase": 1,
+      "title": "Steam detection (libraryfolders.vdf, appmanifest_*.acf, buildid)",
+      "status": "todo",
+      "verify": "fixture tests: 2 libraries, 3 games, missing folder ignored"
+    },
+    {
+      "id": "P1-4",
+      "phase": 1,
+      "title": "Epic detection (*.item manifests)",
+      "status": "todo",
+      "verify": "fixture tests incl. malformed manifest"
+    },
+    {
+      "id": "P1-5",
+      "phase": 1,
+      "title": "GOG detection (registry + goggame-*.info)",
+      "status": "todo",
+      "verify": "fixture tests via fake Registry; windows-latest smoke test"
+    },
+    {
+      "id": "P1-6",
+      "phase": 1,
+      "title": "Xbox/MS Store detection (XboxGames, appx manifest)",
+      "status": "todo",
+      "verify": "fixture tests; WindowsApps marked mod-unfriendly"
+    },
+    {
+      "id": "P1-7",
+      "phase": 1,
+      "title": "Engine + anti-cheat + version fingerprinting",
+      "status": "todo",
+      "verify": "fixture trees for Unity mono/IL2CPP, UE, Godot, EAC/BattlEye flags"
+    },
+    {
+      "id": "P1-8",
+      "phase": 1,
+      "title": "Manifest parsing + schema validation in Rust (same JSON Schema)",
+      "status": "todo",
+      "verify": "tests: both examples give same verdicts as the Python/TS validators"
+    },
+    {
+      "id": "P1-9",
+      "phase": 1,
+      "title": "Package verify: Ed25519 signature, checksums, key rotation, yank list",
+      "status": "todo",
+      "verify": "tests: good, tampered byte, wrong key, unsigned, unknown key_id"
+    },
+    {
+      "id": "P1-10",
+      "phase": 1,
+      "title": "Dependency fetcher (github-release, thunderstore, modrinth, curseforge, url allow-list, manual)",
+      "status": "todo",
+      "verify": "tests with a local HTTP fixture server; sha256 mismatch rejected"
+    },
+    {
+      "id": "P1-11",
+      "phase": 1,
+      "title": "Install engine: plan, path sandbox, journal, vault backup, atomic apply, rollback",
+      "status": "todo",
+      "verify": "tests: traversal/symlink escape rejected; injected failure mid-apply leaves tree byte-identical"
+    },
+    {
+      "id": "P1-12",
+      "phase": 1,
+      "title": "Uninstall/restore with hash verification; Repair with store-verify fallback",
+      "status": "todo",
+      "verify": "tests: install→uninstall gives identical tree hash; modified file triggers ask; game update → repair_needed"
+    },
+    {
+      "id": "P1-13",
+      "phase": 1,
+      "title": "Crash recovery of uncommitted journals",
+      "status": "todo",
+      "verify": "test: kill after N ops, restart, tree restored"
+    },
+    {
+      "id": "P1-14",
+      "phase": 1,
+      "title": "Hello mod end-to-end on a test game folder",
+      "status": "todo",
+      "verify": "mash-core CLI example: detect fixture → install hello-mod → files present → uninstall → sha256 tree identical"
+    },
+    {
+      "id": "P1-15",
+      "phase": 1,
+      "title": "windows-latest CI job for mashup-core",
+      "status": "todo",
+      "verify": "CI green on Windows runner"
+    },
+    {
+      "id": "P2-1",
+      "phase": 2,
+      "title": "Next.js App Router scaffold with brand tokens + Supabase client",
+      "status": "todo",
+      "verify": "next build passes; lint clean"
+    },
+    {
+      "id": "P2-2",
+      "phase": 2,
+      "title": "Discover: featured/trending/new/filter by game",
+      "status": "todo",
+      "verify": "Playwright against seeded local DB"
+    },
+    {
+      "id": "P2-3",
+      "phase": 2,
+      "title": "Mashup detail: media, required games + launcher deep-link ownership state, deps, credits, licenses, versions, ratings, comments",
+      "status": "todo",
+      "verify": "Playwright; credits/licences rendered for every dep"
+    },
+    {
+      "id": "P2-4",
+      "phase": 2,
+      "title": "Creator profile + dashboard (uploads, versions, analytics)",
+      "status": "todo",
+      "verify": "Playwright as creator; creator_stats chart"
+    },
+    {
+      "id": "P2-5",
+      "phase": 2,
+      "title": "Moderator review queue",
+      "status": "todo",
+      "verify": "Playwright as moderator; non-moderator gets 404"
+    },
+    {
+      "id": "P2-6",
+      "phase": 2,
+      "title": "Auth: email + Discord + Steam OpenID function",
+      "status": "todo",
+      "verify": "unit tests for OpenID verify; live OAuth needs app credentials",
+      "needs_approval": "Discord/Steam app registration"
+    },
+    {
+      "id": "P2-7",
+      "phase": 2,
+      "title": "Local Supabase stack (supabase CLI + Docker) for dev/tests",
+      "status": "todo",
+      "verify": "supabase start; migrations apply; RLS tests pass against it"
+    },
+    {
+      "id": "P3-1",
+      "phase": 3,
+      "title": "Shared scan-rules package (TS) ported from um/publish.py",
+      "status": "todo",
+      "verify": "unit tests; parity fixtures with um publish check"
+    },
+    {
+      "id": "P3-2",
+      "phase": 3,
+      "title": "upload-init / upload-complete / draft-status / submit-review / review-decision / resolve functions",
+      "status": "todo",
+      "verify": "deno test with local stack"
+    },
+    {
+      "id": "P3-3",
+      "phase": 3,
+      "title": "Scanner container: limits, zip-bomb, schema, file types, hash blacklist, ClamAV, dep verify",
+      "status": "todo",
+      "verify": "docker run on fixtures: EICAR, fake game file, traversal, bomb, bad dep hash → all rejected; hello-mod passes"
+    },
+    {
+      "id": "P3-4",
+      "phase": 3,
+      "title": "Signing step + key handling (Vault)",
+      "status": "todo",
+      "verify": "signed package verifies in mashup-core tests"
+    },
+    {
+      "id": "P3-5",
+      "phase": 3,
+      "title": "mash CLI: login, init, validate, pack, publish --draft",
+      "status": "todo",
+      "verify": "vitest; e2e against local stack"
+    },
+    {
+      "id": "P3-6",
+      "phase": 3,
+      "title": "GitHub Action + OIDC publishing",
+      "status": "todo",
+      "verify": "act or a test repo run",
+      "needs_approval": "test repository + workflow run"
+    },
+    {
+      "id": "P3-7",
+      "phase": 3,
+      "title": "docs/agent-instructions.md + `mash mcp` stdio server",
+      "status": "todo",
+      "verify": "MCP inspector lists tools; validate_manifest on examples"
+    },
+    {
+      "id": "P4-1",
+      "phase": 4,
+      "title": "Tauri 2 shell wired to mashup-core; deep links mashworks://",
+      "status": "todo",
+      "verify": "cargo build; deep link parser tests"
+    },
+    {
+      "id": "P4-2",
+      "phase": 4,
+      "title": "Library / Discover / Installed / Settings views",
+      "status": "todo",
+      "verify": "vite build; Playwright with mocked Tauri bridge; screenshots reviewed"
+    },
+    {
+      "id": "P4-3",
+      "phase": 4,
+      "title": "Play button state machine + progress UI + logs viewer",
+      "status": "todo",
+      "verify": "state machine unit tests cover every transition"
+    },
+    {
+      "id": "P4-4",
+      "phase": 4,
+      "title": "Online/anti-cheat warning UX",
+      "status": "todo",
+      "verify": "test: protected game → blocked state with named anti-cheat"
+    },
+    {
+      "id": "P4-5",
+      "phase": 4,
+      "title": "Accessibility + contrast",
+      "status": "todo",
+      "verify": "axe checks pass; contrast ≥ 4.5:1 for text tokens"
+    },
+    {
+      "id": "P5-1",
+      "phase": 5,
+      "title": "Invite links: create, open launcher, ownership check, same version install, connect",
+      "status": "todo",
+      "verify": "unit + integration tests; real 2-PC test is manual",
+      "needs_approval": "confirm Phase 5 is enabled"
+    },
+    {
+      "id": "P6-1",
+      "phase": 6,
+      "title": "Playwright e2e suite + launcher integration tests in CI",
+      "status": "todo",
+      "verify": "CI green"
+    },
+    {
+      "id": "P6-2",
+      "phase": 6,
+      "title": "Signed installer + auto-update channel",
+      "status": "todo",
+      "verify": "signed NSIS/MSI from CI; updater test",
+      "needs_approval": "code-signing certificate (paid)"
+    },
+    {
+      "id": "P6-3",
+      "phase": 6,
+      "title": "Error reporting (opt-in)",
+      "status": "todo",
+      "verify": "test event received in staging",
+      "needs_approval": "error-reporting service account"
+    },
+    {
+      "id": "P6-4",
+      "phase": 6,
+      "title": "Terms, Privacy (marked for lawyer review), DMCA/takedown flow",
+      "status": "todo",
+      "verify": "pages build; takedown function test"
+    },
+    {
+      "id": "P6-5",
+      "phase": 6,
+      "title": "README with full setup steps (terminal + folder per command)",
+      "status": "todo",
+      "verify": "fresh-clone walkthrough in a clean container"
+    },
+    {
+      "id": "P6-6",
+      "phase": 6,
+      "title": "Staging deploy (Vercel + Supabase)",
+      "status": "todo",
+      "verify": "smoke test on staging URLs",
+      "needs_approval": "creating cloud projects / deploy"
+    },
+    {
+      "id": "P6-7",
+      "phase": 6,
+      "title": "tools-log.md, capability scorecard, CHANGELOG",
+      "status": "todo",
+      "verify": "files present and accurate"
+    }
+  ]
+}

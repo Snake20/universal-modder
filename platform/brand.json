@@ -1,0 +1,9 @@
+{
+  "name": "Mashworks",
+  "tagline": "Mash up the games you already own.",
+  "colors": { "primary": "#FF5A1F", "secondary": "#14E3C0", "ink": "#12100E", "paper": "#F6F1EA" },
+  "voice": "Playful and precise: a workshop, not a casino. Short sentences, credit people by name, never hype.",
+  "cli": "mash",
+  "scheme": "mashworks",
+  "_note": "Working values pending approval (DECISIONS.md D-001). Every app reads this file; do not hard-code these elsewhere."
+}

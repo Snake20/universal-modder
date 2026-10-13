@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "id": "hello-mod",
+  "version": "0.1.0",
+  "title": "Hello Mod",
+  "summary": "The smallest possible mashup: drops a greeting file and a config tweak into a test game.",
+  "authors": [{ "name": "Mashworks", "handle": "mashworks" }],
+  "license": "MIT",
+  "requires": {
+    "games": [
+      {
+        "key": "testgame",
+        "name": "Test Game",
+        "stores": { "steam": "480" },
+        "user_dirs": [{ "key": "config", "base": "documents", "path": "My Games/TestGame" }]
+      }
+    ],
+    "dependencies": []
+  },
+  "ops": [
+    { "op": "copy", "root": "testgame", "target": "mods/hello/hello.txt", "from": "payload/hello.txt" },
+    { "op": "ini-set", "root": "testgame:config", "target": "settings.ini", "section": "Mods", "key": "Enabled", "value": "1" },
+    { "op": "json-merge", "root": "testgame", "target": "data/options.json", "patch": { "greeting": "hello from a mod" } }
+  ],
+  "launch": { "game": "testgame", "via": "store" },
+  "online": { "mode": "offline" },
+  "multiplayer": { "supported": false },
+  "credits": [{ "name": "Mashworks", "role": "example", "license": "MIT" }]
+}

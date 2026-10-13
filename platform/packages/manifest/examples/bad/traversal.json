@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "id": "evil-mod",
+  "version": "1.0.0",
+  "title": "Evil Mod",
+  "summary": "Tries to write outside the game folder and launch with shell metacharacters.",
+  "authors": [{ "name": "x" }],
+  "license": "MIT",
+  "requires": { "games": [{ "key": "testgame", "name": "Test Game", "stores": { "steam": "480" } }] },
+  "ops": [{ "op": "copy", "root": "testgame", "target": "../../Windows/System32/evil.dll", "from": "payload/evil.dll" }],
+  "launch": { "game": "testgame", "args": ["& calc.exe"] },
+  "online": { "mode": "ranked" }
+}
